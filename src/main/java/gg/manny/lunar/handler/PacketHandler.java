@@ -1,7 +1,6 @@
 package gg.manny.lunar.handler;
 
 import gg.manny.lunar.LunarClientAPI;
-import gg.manny.lunar.type.ClientType;
 import gg.manny.lunar.util.ReflectionUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
@@ -27,8 +26,11 @@ public class PacketHandler extends ChannelDuplexHandler {
             byte[] data = (byte[]) ReflectionUtil.getMethod(msg, "e");
             String payload = StringUtils.newStringUtf8(data);
             if (payload.contains("Lunar-Client")) {
-                LunarClientAPI.getInstance().getClientMap().put(player.getUniqueId(), ClientType.LUNAR_CLIENT);
-                player.sendMessage(ChatColor.GREEN + "You are using Lunar Client, epic.");
+                if (!LunarClientAPI.getInstance().getPlayers().contains(player.getUniqueId())) {
+                    LunarClientAPI.getInstance().getPlayers().add(player.getUniqueId());
+
+                    player.sendMessage(ChatColor.GREEN + "You are using Lunar Client, epic.");
+                }
             }
 
         } else {

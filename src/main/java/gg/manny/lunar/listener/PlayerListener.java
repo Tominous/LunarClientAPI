@@ -1,7 +1,6 @@
 package gg.manny.lunar.listener;
 
 import gg.manny.lunar.LunarClientAPI;
-import gg.manny.lunar.type.ClientType;
 import gg.manny.lunar.util.ReflectionUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.util.io.netty.buffer.ByteBuf;
@@ -25,7 +24,6 @@ public class PlayerListener implements Listener {
 
         //String ByteBuf
         //Packet packet = new PacketPlayOutCustomPayload("REGISTER", PivotUtil.serializeBuf("Lunar-Client"));
-        this.instance.getClientMap().put(player.getUniqueId(), ClientType.NONE);
         this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> {
             //messy af ¯\_(ツ)_/¯
             try {
@@ -44,13 +42,14 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
+        Player player = event.getPlayer();
+        this.instance.getPlayers().remove(player.getUniqueId());
+
         try {
-            ReflectionUtil.eject(event.getPlayer());
+            ReflectionUtil.eject(player);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        this.instance.getClientMap().remove(event.getPlayer().getUniqueId());
     }
 
 }
