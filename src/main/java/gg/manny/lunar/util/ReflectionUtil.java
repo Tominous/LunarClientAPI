@@ -1,9 +1,11 @@
 package gg.manny.lunar.util;
 
-import gg.manny.lunar.handler.PacketHandler;
 import net.minecraft.util.io.netty.channel.Channel;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -64,19 +66,22 @@ public class ReflectionUtil {
         return channel;
     }
 
-    public static void inject(Player player) throws Exception {
-        Channel channel = getChannel(player);
-        if (channel != null) {
-            channel.pipeline().addBefore("packet_handler", "manny", new PacketHandler(player));
+    public static void registerCommand(JavaPlugin plugin, Command command) {
+        Field bukkitCommandMap = null;
+        try {
+            bukkitCommandMap = plugin.getServer().getClass().getDeclaredField("commandMap");
+            bukkitCommandMap.setAccessible(true);
+        } catch (NoSuchFieldException | SecurityException e) {
+            e.printStackTrace();
+        }
+
+        CommandMap commandMap;
+        try {
+            commandMap = (org.bukkit.command.CommandMap) bukkitCommandMap.get(plugin.getServer());
+            commandMap.register(plugin.getDescription().getName(), command);
+        } catch (IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
-
-    public static void eject(Player player) throws Exception {
-        Channel channel = getChannel(player);
-        if (channel != null) {
-            channel.pipeline().remove("manny");
-        }
-    }
-
 
 }

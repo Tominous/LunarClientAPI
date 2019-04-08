@@ -38,7 +38,7 @@ public class CheckCommand extends Command {
             return true;
         }
 
-        boolean client = LunarClientAPI.onClient(player);
+        boolean client = this.plugin.onClient(player);
         sender.sendMessage((client ? ChatColor.GREEN : ChatColor.RED) + player.getName() + " is " + (client ? "using" : "not using") + " lunar client.");
         return true;
     }
