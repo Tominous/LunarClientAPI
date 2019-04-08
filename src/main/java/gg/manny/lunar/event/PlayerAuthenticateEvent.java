@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class PlayerAuthenticateEvent extends Event {
 
     private static final HandlerList handlers = new HandlerList();

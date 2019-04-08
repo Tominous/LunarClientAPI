@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.lang.reflect.Constructor;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import static gg.manny.lunar.util.ReflectionUtil.getChannel;
 
@@ -22,11 +24,14 @@ public class PlayerListener implements Listener {
 
     private final LunarClientAPI instance;
 
+    private final Executor INJECT_EXECUTOR = Executors.newSingleThreadExecutor();
+    private final Executor EJECT_EXECUTOR = Executors.newSingleThreadExecutor(); //when u gotta pull out faster than ygore
+
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        this.instance.getServer().getScheduler().runTaskAsynchronously(this.instance, () -> {
+        INJECT_EXECUTOR.execute(() -> {
             // ¯\_(ツ)_/¯
             try {
                 Constructor constructor = ReflectionUtil.getClass("PacketPlayOutCustomPayload").getConstructor(String.class, ByteBuf.class);
@@ -35,7 +40,7 @@ public class PlayerListener implements Listener {
                 ReflectionUtil.sendPacket(player, packet);
                 Channel channel = getChannel(player);
                 if (channel != null) {
-                    channel.pipeline().addBefore("packet_handler", "manny", new PacketHandler(this.instance, player));
+                    channel.pipeline().addBefore("packet_handler", "manny", new PacketHandler(instance, player));
                 }
 
             } catch (Exception e) {
@@ -48,16 +53,18 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        this.instance.getPlayers().remove(player.getUniqueId());
+        instance.getPlayers().remove(player.getUniqueId());
 
-        try {
-            Channel channel = getChannel(player);
-            if (channel != null && channel.pipeline().get("manny") != null) {
-                channel.pipeline().remove("manny");
+        EJECT_EXECUTOR.execute(() -> {
+            try {
+                Channel channel = getChannel(player);
+                if (channel != null && channel.pipeline().get("manny") != null) {
+                    channel.pipeline().remove("manny");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        });
     }
 
 }

@@ -18,39 +18,31 @@ public class LunarClientAPI extends JavaPlugin {
     @Getter
     public static LunarClientAPI instance;
 
-    private List<UUID> players = new ArrayList<>();
+    private final List<UUID> players = new ArrayList<>();
 
     private boolean restrict;
     private String kickMessage;
     private String authMessage;
 
-    @Override
     public void onEnable() {
         instance = this;
 
-        this.loadConfig();
+        saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        restrict = getConfig().getBoolean("restrict", false);
+        kickMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("kick-message", "&cYou must use Lunar Client to connect to this server."));
+        authMessage = ChatColor.translateAlternateColorCodes('&', getConfig().getString("authenticate", " \n&aYou have connected to the server with &lLunar Client&a.\n "));
 
         ReflectionUtil.registerCommand(this, new CheckCommand(this));
-        this.getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
     }
 
-    @Override
     public void onDisable() {
         this.saveConfig();
     }
 
-
-    private void loadConfig() {
-        this.saveDefaultConfig();
-        this.getConfig().options().copyDefaults(true);
-
-        this.restrict = this.getConfig().getBoolean("restrict", false);
-        this.kickMessage = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("kick-message", "&cYou must use Lunar Client to connect to this server."));
-        this.authMessage = ChatColor.translateAlternateColorCodes('&', this.getConfig().getString("authenticate", " \n&aYou have connected to the server with &lLunar Client&a.\n "));
-    }
-
     public boolean onClient(Player player) {
-        return this.players.contains(player.getUniqueId());
+        return players.contains(player.getUniqueId());
     }
 
 
