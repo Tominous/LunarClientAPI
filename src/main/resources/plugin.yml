@@ -2,4 +2,4 @@ name: LunarClientAPI
 main: gg.manny.lunar.LunarClientAPI
 author: Manny
 version: ${version}
-commnads:
+commands:
