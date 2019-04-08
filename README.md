@@ -34,6 +34,11 @@ compile "gg.manny:lunar-client-api:1.0-SNAPSHOT"
 Here is some example usage, the following code will tell you whether a player is using lunar client.ó
 
 ````java
-LunarClientAPI.getInstance().getClient(player); //Returns Client type
-LunarClientAPI.getInstance().hasClient(player); //Returns true or false
+LunarClientAPI.getInstance().onClient(player); //Returns true or false
+
+@EventHandler
+public void onAuthenticate(PlayerAuthenticateEvent event) {
+    Player player = event.getPlayer();
+    player.sendMessage("Lunar Client Verified...");
+}
 ````
