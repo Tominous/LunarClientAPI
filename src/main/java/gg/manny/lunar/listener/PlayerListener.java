@@ -43,7 +43,7 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        this.instance.getPlayers().remove(player.getUniqueId());
+        LunarClientAPI.getPlayers().remove(player.getUniqueId());
 
         try {
             ReflectionUtil.eject(player);

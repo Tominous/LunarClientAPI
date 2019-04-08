@@ -26,8 +26,8 @@ public class PacketHandler extends ChannelDuplexHandler {
             byte[] data = (byte[]) ReflectionUtil.getMethod(msg, "e");
             String payload = StringUtils.newStringUtf8(data);
             if (payload.contains("Lunar-Client")) {
-                if (!LunarClientAPI.getInstance().getPlayers().contains(player.getUniqueId())) {
-                    LunarClientAPI.getInstance().getPlayers().add(player.getUniqueId());
+                if (!LunarClientAPI.getPlayers().contains(player.getUniqueId())) {
+                    LunarClientAPI.getPlayers().add(player.getUniqueId());
 
                     player.sendMessage(ChatColor.GREEN + "You are using Lunar Client, epic.");
                 }
