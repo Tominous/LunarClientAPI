@@ -52,7 +52,7 @@ public class PlayerListener implements Listener {
 
         try {
             Channel channel = getChannel(player);
-            if (channel != null) {
+            if (channel != null && channel.pipeline().get("manny") != null) {
                 channel.pipeline().remove("manny");
             }
         } catch (Exception e) {
