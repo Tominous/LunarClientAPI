@@ -1,0 +1,4 @@
+name: LunarClientAPI
+main: gg.manny.lunar.LunarClientAPI
+version: ${version}
+commnads:
