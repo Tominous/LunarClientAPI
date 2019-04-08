@@ -1,6 +1,7 @@
 package gg.manny.lunar.handler;
 
 import gg.manny.lunar.LunarClientAPI;
+import gg.manny.lunar.event.PlayerAuthenticateEvent;
 import gg.manny.lunar.util.ReflectionUtil;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
@@ -24,6 +25,8 @@ public class PacketHandler extends ChannelDuplexHandler {
                     this.plugin.getPlayers().add(player.getUniqueId());
 
                     player.sendMessage(plugin.getAuthMessage());
+                    plugin.getServer().getPluginManager().callEvent(new PlayerAuthenticateEvent(player));
+
                 }
             }
 
