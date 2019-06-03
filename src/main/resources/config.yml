@@ -1,7 +1,7 @@
 #Made with <3 by Manny
 
 #Restricts to Lunar Client only -- kicks non lunar-client
-restrict: true
+restrict: false
 
 #If server is restricted to Lunar Client, they'll receive this kick message.
 kick-message: "&cYou must use Lunar Client to connect to this server."
